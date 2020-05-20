@@ -83,3 +83,93 @@ export async function findUserByUsernamePassword(username: string, password: str
     }
     
 }
+
+export async function updateUser(id: number, key: string, newValue: string)
+{
+    let client: PoolClient = await connectionPool.connect();
+    client.query("SET search_path TO project_zero");
+    try
+    {
+        let result: QueryResult = await client.query(`UPDATE users SET $1 = $2 WHERE id = $3`, [key, newValue, id]);
+    }
+    catch(e)
+    {
+        throw new Error(`Failed to update user: ${e.message}`);
+    }
+    finally
+    {
+        client && client.release();
+    }
+     
+}
+
+// export async function updateUser(id: number, username?: string, password?: string, firstName?: string, lastName?: string, email?: string, role?: string): Promise<User[]>
+// {
+//     let client: PoolClient = await connectionPool.connect();
+//     client.query("SET search_path TO project_zero");
+//     try
+//     {
+//         if(username)
+//         {
+//             console.log('got to username conditional');
+//             let result: QueryResult;
+//             result = await client.query(`UPDATE users SET username = $1 where id = $2`, [username, id]);
+//         }
+//         if(password)
+//         {
+//             console.log('got to password conditional');
+//             let result: QueryResult;
+//             result = await client.query(`UPDATE users SET "password" = $1 where id = $2`, [password, id]);
+//         }
+//         if(firstName)
+//         {
+//             let result: QueryResult;
+//             result = await client.query(`UPDATE users SET first_name = $1 where id = $2`, [firstName, id]);
+//         }
+//         if(lastName)
+//         {
+//             let result: QueryResult;
+//             result = await client.query(`UPDATE users SET last_name = $1 where id = $2`, [lastName, id]);
+//         }
+//         if(email)
+//         {
+//             console.log('got to email conditional');
+//             let result: QueryResult;
+//             result = await client.query(`UPDATE users SET email = $1 where id = $2`, [email, id]);
+//         }
+//         if(role)
+//         {
+//             if(role === "Financial Manager")
+//             {
+//                 let result: QueryResult;
+//                 result = await client.query(`UPDATE users SET role_id = 2 where id = $1`, [id]);
+//             }
+//             if(role === "Admin")
+//             {
+//                 let result: QueryResult;
+//                 result = await client.query(`UPDATE users SET role_id = 1 where id = $1`, [id]);
+//             }
+//             if(role === "User")
+//             {
+//                 let result: QueryResult;
+//                 result = await client.query(`UPDATE users SET role_id = 1 where id = $1`, [id]);
+//             }
+//         }
+//         let result: QueryResult;
+//         result = await client.query(`Select * FROM users WHERE id = $1`, [id]);
+//         const user: User[] = result.rows.map((u)=>
+//         {
+//             return new User(u.id, u.username, u.password, u.first_name, u.last_name, u.email, u.role_name);
+//         })
+//         return user;
+
+//     }
+//     catch(e)
+//     {
+//         throw new Error(`Couldn't update user: ${e.message}`);
+//     }
+//     finally
+//     {
+//         client && client.release();
+//     }
+// }

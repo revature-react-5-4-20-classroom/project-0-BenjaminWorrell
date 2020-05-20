@@ -9,7 +9,7 @@ import { sessionMiddleware } from "../middleware/sessionMiddleware";
 import { reimbursementRouter } from "../routers/reimbursementRouter";
 
 const app: Application = express();
-const PORT = 2020;
+const PORT = 2500;
 
 app.use(bodyParser.json());
 app.use(sessionMiddleware);
