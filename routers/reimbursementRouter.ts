@@ -2,7 +2,7 @@ import { PoolClient, QueryResult } from "pg";
 import { connectionPool } from "../repository";
 import express, { Application, Response, Request } from "express";
 import { Reimbursement } from "../models/Reimbursement";
-import {findReimbursementByStatusId, findReimbursementByUserId, addNewReimbursement} from "../repository/reimbursement-data-access"
+import {findReimbursementByStatusId, findReimbursementByUserId, addNewReimbursement, findReimbursementById} from "../repository/reimbursement-data-access"
 import { checkLogin} from "../middleware/authMiddleware";
 
 export const reimbursementRouter: Application = express();
@@ -72,6 +72,65 @@ reimbursementRouter.post('/', async (req: Request, res: Response)=>
     else
     {
         res.status(400).send('Please include the required fields');
+    }
+})
+reimbursementRouter.patch('/', checkLogin())
+reimbursementRouter.patch('/', async (req: Request, res: Response)=>
+{
+    const args=req.body;
+    if(req.session && req.session.role !== "Financial Manager")
+    {
+        res.status(401).send('You are not authorized to view this page');   
+    }
+    else
+    {
+        let client: PoolClient = await connectionPool.connect();
+        client.query("SET search_path TO project_zero");
+        if(!args.id)
+        {
+            res.status(400).send('Must include id in request');
+        }
+        else
+        {
+            for(let i in args)
+            {
+                if(i === "id"){}
+                else if(i==="author")
+                {
+                    let result: QueryResult = await client.query(`UPDATE reimbursements SET author = $1 WHERE id = $2`, [args[i], args.id])
+                }
+                else if(i==="amount")
+                {
+                    let result: QueryResult = await client.query(`UPDATE reimbursements SET amount = $1 WHERE id = $2`, [args[i], args.id])
+                }
+                else if(i==="dateSubmitted")
+                {
+                    let result: QueryResult = await client.query(`UPDATE reimbursements SET dateSubmitted = $1 WHERE id = $2`, [args[i], args.id])
+                }
+                else if(i==="dateResolved")
+                {
+                    let result: QueryResult = await client.query(`UPDATE reimbursements SET dateResolved = $1 WHERE id = $2`, [args[i], args.id])
+                }
+                else if(i==="description")
+                {
+                    let result: QueryResult = await client.query(`UPDATE reimbursements SET description = $1 WHERE id = $2`, [args[i], args.id])
+                }
+                else if(i==="resolver")
+                {
+                    let result: QueryResult = await client.query(`UPDATE reimbursements SET resolver = $1 WHERE id = $2`, [args[i], args.id])
+                }
+                else if(i==="status")
+                {
+                    let result: QueryResult = await client.query(`UPDATE reimbursements SET status = $1 WHERE id = $2`, [args[i], args.id])
+                }
+                else if(i==="type")
+                {
+                    let result: QueryResult = await client.query(`UPDATE reimbursements SET type = $1 WHERE id = $2`, [args[i], args.id])
+                }
+            }
+            const reimbursements: Reimbursement[] = await findReimbursementById(+args.id);
+            res.json(reimbursements);
+        } 
     }
 })
 

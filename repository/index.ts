@@ -8,5 +8,5 @@ export const connectionPool : Pool = new Pool(
     password: process.env['PG_PASSWORD'],
     database: process.env['PG_DATABASE'],
     port: 5432,
-    max: 5
+    max: 500
 });

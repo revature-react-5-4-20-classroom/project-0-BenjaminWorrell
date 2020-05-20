@@ -84,24 +84,24 @@ export async function findUserByUsernamePassword(username: string, password: str
     
 }
 
-export async function updateUser(id: number, key: string, newValue: string)
-{
-    let client: PoolClient = await connectionPool.connect();
-    client.query("SET search_path TO project_zero");
-    try
-    {
-        let result: QueryResult = await client.query(`UPDATE users SET $1 = $2 WHERE id = $3`, [key, newValue, id]);
-    }
-    catch(e)
-    {
-        throw new Error(`Failed to update user: ${e.message}`);
-    }
-    finally
-    {
-        client && client.release();
-    }
+// export async function updateUser(id: number, newValue: string)
+// {
+//     let client: PoolClient = await connectionPool.connect();
+//     client.query("SET search_path TO project_zero");
+//     try
+//     {
+//         let result: QueryResult = await client.query(`UPDATE users SET username = $2 WHERE id = $3`, [newValue, id]);
+//     }
+//     catch(e)
+//     {
+//         throw new Error(`Failed to update user: ${e.message}`);
+//     }
+//     finally
+//     {
+//         client && client.release();
+//     }
      
-}
+// }
 
 // export async function updateUser(id: number, username?: string, password?: string, firstName?: string, lastName?: string, email?: string, role?: string): Promise<User[]>
 // {

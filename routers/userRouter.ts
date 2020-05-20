@@ -2,7 +2,7 @@ import { User } from "../models/User";
 import { PoolClient, QueryResult } from "pg";
 import { connectionPool } from "../repository";
 import express, { Application, Response, Request } from "express";
-import { getAllUsers, getUserById, updateUser } from "../repository/user-data-access";
+import { getAllUsers, getUserById} from "../repository/user-data-access";
 import { checkLogin } from "../middleware/authMiddleware";
 import bodyParser from 'body-parser';
 
@@ -45,26 +45,69 @@ userRouter.get('/:id', async (req: Request, res: Response)=>
 
 })
 
-//userRouter.patch('/', checkLogin());
+userRouter.patch('/', checkLogin());
 userRouter.patch('/', async (req: Request, res: Response)=>
 {
     const args = req.body;
-    if(!args.id)
+    if(req.session && req.session.user.role !== "Admin")
     {
-        console.log()
-        res.status(400).send('Must include user id in request');
+        res.status(401).send('You are not authorized to view this page');   
     }
-
-    for(let i in args)
+    else
     {
-        if(i === "id")
+        let client: PoolClient = await connectionPool.connect();
+        client.query("SET search_path TO project_zero");
+        if(!args.id)
         {
+            res.status(400).send('Must include user id in request');
         }
-        else
+
+        for(let i in args)
         {
-            console.log(i);
-            console.log(args[i]);
-            updateUser(+args.id, i, args[i]);
+            if(i === "id")
+            {
+            }
+            else if(i ==="username")
+            {
+                let result: QueryResult = await client.query(`UPDATE users SET username = $1 WHERE id = $2`, [args[i], args.id]);
+                
+            }
+            else if(i === "password")
+            {
+                let result: QueryResult = await client.query(`UPDATE users SET password = $1 WHERE id = $2`, [args[i], args.id]);
+            }
+            else if(i === "email")
+            {
+                let result: QueryResult = await client.query(`UPDATE users SET email = $1 WHERE id = $2`, [args[i], args.id]);
+            }
+            else if(i === "firstName")
+            {
+                let result: QueryResult = await client.query(`UPDATE users SET first_name = $1 WHERE id = $2`, [args[i], args.id]);
+            }
+            else if(i === "lastName")
+            {
+                let result: QueryResult = await client.query(`UPDATE users SET last_name = $1 WHERE id = $2`, [args[i], args.id]);
+            }
+            else if(i === "role")
+            {
+                if(args.role !== "Financial Manager")
+                {
+                    let result: QueryResult;
+                    result = await client.query(`UPDATE users SET role_id = 2 where id = $1`, [args.id]);
+                }
+                if(args.role === "Admin")
+                {
+                    let result: QueryResult;
+                    result = await client.query(`UPDATE users SET role_id = 1 where id = $1`, [args.id]);
+                }
+                if(args.role === "User")
+                {
+                    let result: QueryResult;
+                    result = await client.query(`UPDATE users SET role_id = 1 where id = $1`, [args.id]);
+                }
+            }
+
+            
         }
     }
     // else
