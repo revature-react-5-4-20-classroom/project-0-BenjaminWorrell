@@ -65,7 +65,7 @@ reimbursementRouter.post('/', async (req: Request, res: Response)=>
     let{author, amount, dateSubmitted, dateResolved, description, resolver, status, type} = req.body;
     if(author && amount && dateSubmitted && dateResolved && description && resolver && status && type)
     {
-        let newReim = new Reimbursement(0, author, amount, dateSubmitted, dateResolved, description, resolver, status, type)
+        let newReim = new Reimbursement(0,author, amount, dateSubmitted, dateResolved, description, resolver, status, type)
         await addNewReimbursement(newReim)
         res.status(201).json(newReim);
     }
