@@ -12,7 +12,7 @@ userRouter.use(bodyParser.json());
 userRouter.get('/', checkLogin())
 userRouter.get('/', async (req:Request, res: Response)=>
 {
-    if(req.session && req.session.user.role !== 'Financial Manager')
+    if(req.session && (req.session.user.role !== 'Financial Manager' || req.session.user.role !== 'Admin'))
     {
         res.status(401).send('You are not authorized to view this page');
     }
