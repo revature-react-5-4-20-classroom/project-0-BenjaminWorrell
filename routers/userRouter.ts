@@ -31,6 +31,7 @@ userRouter.get('/:id', async (req: Request, res: Response)=>
     const id = +req.params.id;
     if(isNaN(id))
     {
+        console.log("Made it to the backend");
         res.status(400).send('Must include numeric id in path');
     }
     else if(req.session && (req.session.user.role !== 'Financial Manager' && req.session.user.id !== id))
