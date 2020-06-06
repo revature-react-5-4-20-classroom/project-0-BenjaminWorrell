@@ -15,7 +15,7 @@ const PORT = 2500;
 app.use(corsFilter)
 app.use(bodyParser.json());
 app.use(sessionMiddleware);
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 
