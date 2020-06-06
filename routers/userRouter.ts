@@ -110,32 +110,7 @@ userRouter.patch('/', async (req: Request, res: Response)=>
             
         }
     }
-    // else
-    // {
-    //     if(args.username && args.password && args.firstName && args.lastName && args.email && args.role)
-    //     {
-    //         updateUser(+args.id, args.username, args.password, args.firstName, args.lastName, args.email, args.role);
-    //     }
-    //     else if(args.username && args.password && args.firstName && args.lastName && args.email)
-    //     {
-    //         updateUser(+args.id, args.username, args.password, args.firstName, args.lastName, args.email);
-    //     }
-    //     else if(args.username && args.password && args.firstName && args.lastName)
-    //     {
-    //         updateUser(+args.id, args.username, args.password, args.firstName, args.lastName);
-    //     }
-    //     else if(args.username && args.password && args.firstName)
-    //     {
-    //         updateUser(+args.id, args.username,args.password, args.firstName);
-    //     }
-    //     else if(args.username && args.password)
-    //     {
-    //         updateUser(+args.id, args.username,args.password,);
-    //     }
-    //     else if(args.username)
-    //     {
-    //         updateUser(+args.id, args.username);
-    //     }
+ 
     const users: User[] = await getUserById(+args.id); 
     res.status(201).json(users)
 })

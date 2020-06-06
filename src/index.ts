@@ -7,10 +7,12 @@ import { userRouter } from "../routers/userRouter";
 import { findUserByUsernamePassword } from "../repository/user-data-access";
 import { sessionMiddleware } from "../middleware/sessionMiddleware";
 import { reimbursementRouter } from "../routers/reimbursementRouter";
+import { corsFilter } from "../middleware/corsFilter";
 
 const app: Application = express();
 const PORT = 2500;
 
+app.use(corsFilter)
 app.use(bodyParser.json());
 app.use(sessionMiddleware);
 
