@@ -34,7 +34,8 @@ export async function getUserById(id: number): Promise<User[]>
     try
     {
         let result: QueryResult;
-        result = await client.query(`Select * FROM users WHERE id = $1`, [id]);
+        result = await client.query(`SELECT users.id, users.username, users.password, users.first_name, 
+        users.last_name, users.email, roles.role_name FROM users INNER JOIN roles ON users.role_id = roles.id WHERE users.id = $1` , [id]);
         return result.rows.map((u)=>
         {
             return new User(u.id, u.username, u.password, u.first_name, u.last_name, u.email, u.role_name);
