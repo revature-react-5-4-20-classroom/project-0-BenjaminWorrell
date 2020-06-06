@@ -49,7 +49,7 @@ userRouter.patch('/', checkLogin());
 userRouter.patch('/', async (req: Request, res: Response)=>
 {
     const args = req.body;
-    if(req.session && req.session.user.role !== "Admin")
+    if(req.session && (req.session.user.role !== "Admin" || req.session.user.role !== "Financial Manager"))
     {
         res.status(401).send('You are not authorized to view this page');   
     }
