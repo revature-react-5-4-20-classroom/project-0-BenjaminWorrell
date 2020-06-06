@@ -2,11 +2,24 @@ import { PoolClient, QueryResult } from "pg";
 import { connectionPool } from "../repository";
 import express, { Application, Response, Request } from "express";
 import { Reimbursement } from "../models/Reimbursement";
-import {findReimbursementByStatusId, findReimbursementByUserId, addNewReimbursement, findReimbursementById} from "../repository/reimbursement-data-access"
+import {findReimbursementByStatusId, findReimbursementByUserId, addNewReimbursement, findReimbursementById, getAllReimbursements} from "../repository/reimbursement-data-access"
 import { checkLogin} from "../middleware/authMiddleware";
 
 export const reimbursementRouter: Application = express();
 
+reimbursementRouter.get('/', async (req:Request, res: Response)=>
+{
+    if(req.session && !(req.session.user.role === 'Financial Manager' || req.session.user.role === 'Admin'))
+    {
+        console.log("You are not authorized to view this page");
+        res.status(401).send('You are not authorized to view this page');
+    }
+    else
+    {
+        const reims: Reimbursement[] = await getAllReimbursements();
+        res.json(reims);
+    }
+});
 reimbursementRouter.get('/status/:id', checkLogin());
 reimbursementRouter.get('/status/:id', async (req: Request, res: Response)=>
 {

@@ -2,7 +2,29 @@ import {  Reimbursement } from "../models/Reimbursement";
 import { PoolClient, QueryResult } from "pg";
 import { connectionPool } from ".";
 
-
+export async function getAllReimbursements(): Promise<Reimbursement[]>
+{
+    let client: PoolClient = await connectionPool.connect();
+    client.query("SET search_path TO project_zero");
+    try
+    {
+        let result: QueryResult;
+        result = await client.query(`Select * FROM reimbursements`);
+        console.log(result.rows);
+        return result.rows.map((r)=>
+        {
+            return new Reimbursement(r.id, r.author, r.amount, r.date_submitted, r.date_resolved, r.description, r.resolver, r.status, r.type);
+        })
+    }
+    catch(e)
+    {   
+        throw new Error(`Failed to find all reimbursements: ${e.message}`);
+    }
+    finally
+    {
+        client && client.release();
+    }
+}
 export async function findReimbursementByStatusId(id: number): Promise<Reimbursement[]> 
 {
      let client: PoolClient
