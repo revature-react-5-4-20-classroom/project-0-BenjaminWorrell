@@ -10,7 +10,7 @@ export async function getAllUsers(): Promise<User[]>
     {
         let result: QueryResult;
         result = await client.query(`SELECT users.id, users.username, users.password, users.first_name, 
-        users.last_name, users.email, roles.role_name FROM users INNER JOIN roles ON users.role_id = roles.id`);
+        users.last_name, users.email, roles.role_name FROM users INNER JOIN roles ON users.role_id = roles.id ORDER BY users.id`);
         console.log(result.rows);
         return result.rows.map((u)=>
         {
