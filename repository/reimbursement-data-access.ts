@@ -9,7 +9,7 @@ export async function getAllReimbursements(): Promise<Reimbursement[]>
     try
     {
         let result: QueryResult;
-        result = await client.query(`Select * FROM reimbursements`);
+        result = await client.query(`Select * FROM reimbursements ORDER BY id`);
         console.log(result.rows);
         return result.rows.map((r)=>
         {
