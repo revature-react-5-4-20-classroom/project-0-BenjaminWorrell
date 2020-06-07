@@ -51,14 +51,13 @@ userRouter.patch('/', checkLogin());
 userRouter.patch('/', async (req: Request, res: Response)=>
 {
     const args = req.body;
-    if(req.session && (req.session.user.role !== "Admin" || req.session.user.role !== "Financial Manager"))
-    {
-        res.status(401).send('You are not authorized to view this page');   
-    }
-    else
-    {
-        let client: PoolClient = await connectionPool.connect();
-        client.query("SET search_path TO project_zero");
+    // if(req.session && (req.session.user.role !== "Admin" || req.session.user.role !== "Financial Manager" || req.session.user.id))
+    // {
+    //     res.status(401).send('You are not authorized to view this page');   
+    // }
+    
+     let client: PoolClient = await connectionPool.connect();
+     client.query("SET search_path TO project_zero");
         if(!args.id)
         {
             res.status(400).send('Must include user id in request');
@@ -111,7 +110,7 @@ userRouter.patch('/', async (req: Request, res: Response)=>
 
             
         }
-    }
+    
  
     const users: User[] = await getUserById(+args.id); 
     res.status(201).json(users)
