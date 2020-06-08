@@ -33,7 +33,7 @@ export async function findReimbursementByStatusId(id: number): Promise<Reimburse
     try
     {
         let result: QueryResult
-        result = await client.query(`SELECT * FROM reimbursements WHERE $1 = status ORDER BY date_submitted`, [id]);
+        result = await client.query(`SELECT * FROM reimbursements WHERE $1 = status ORDER BY author, date_submitted`, [id]);
         const matchingReim = result.rows.map((r)=>
         {
             return new Reimbursement(r.id, r.author, r.amount, r.date_submitted, r.date_resolved, r.description, r.resolver, r.status, r.type)
